@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: xstream_db
+      DB_USERNAME: user
+      DB_PASSWORD: secret
+    networks:
+      - xstream-network
+
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: xstream_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - xstream-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@xstream.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    depends_on:
+      - db
+    networks:
+      - xstream-network
+
+volumes:
+  pgdata:
+
+networks:
+  xstream-network:
