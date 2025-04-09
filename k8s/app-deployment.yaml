@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+        - name: app
+          image: app:latest
+          imagePullPolicy: Never  # Usar imagen local
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DB_HOST
+              value: db
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_DATABASE
+              value: xstream_db
+            - name: DB_USERNAME
+              value: user
+            - name: DB_PASSWORD
+              value: secret

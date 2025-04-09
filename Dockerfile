@@ -15,4 +15,5 @@ COPY . /var/www/html
 
 RUN composer install
 
-CMD ["php", "public/index.php"]
+COPY start.sh /usr/local/bin/start.sh
+CMD ["sh", "/usr/local/bin/start.sh"]
